@@ -1,0 +1,15 @@
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+
+# Project-local toolchains + research/build artifacts
+.tools/
+.reference.*/
+.lake/

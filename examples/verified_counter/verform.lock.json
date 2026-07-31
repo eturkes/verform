@@ -1,0 +1,115 @@
+{
+  "assurance": "kernel",
+  "comparator": null,
+  "format_version": 1,
+  "gates": [
+    {
+      "detail": [],
+      "name": "sources",
+      "ok": true,
+      "summary": "4 Lean source file(s); 4 unique module(s)"
+    },
+    {
+      "detail": [],
+      "name": "source policy",
+      "ok": true,
+      "summary": "no forbidden identifier spellings (comments and literals included)"
+    },
+    {
+      "detail": [],
+      "name": "build closure",
+      "ok": true,
+      "summary": "Lake 1.2.0 lock: 0 pinned Git package(s); 3 hashed control file(s)"
+    },
+    {
+      "detail": [],
+      "name": "review surface",
+      "ok": true,
+      "summary": "4 file(s), 21/80 lines"
+    },
+    {
+      "detail": [],
+      "name": "symbol boundary",
+      "ok": true,
+      "summary": "contract roots reviewed; implementation/proof roots isolated"
+    },
+    {
+      "detail": [],
+      "name": "isolated snapshot",
+      "ok": true,
+      "summary": "fresh workspace contains 8 hashed file(s)"
+    },
+    {
+      "detail": [],
+      "name": "toolchain",
+      "ok": true,
+      "summary": "Lean (version 4.32.2, x86_64-unknown-linux-gnu, commit f3b06c705e6c85f5314019d5d3baab0fec5b580c, Release)"
+    },
+    {
+      "detail": [],
+      "name": "trusted imports",
+      "ok": true,
+      "summary": "Lean parser confirms the trusted local import graph is closed"
+    },
+    {
+      "detail": [],
+      "name": "fresh build",
+      "ok": true,
+      "summary": "cache-free, rehashed Lean elaboration + kernel checking passed"
+    },
+    {
+      "detail": [],
+      "name": "obligation:implementation-correct",
+      "ok": true,
+      "summary": "exact contract/implementation origins and safe local runtime closure; axioms: (none)"
+    },
+    {
+      "detail": [],
+      "name": "kernel replay:VerifiedCounter.Proof",
+      "ok": true,
+      "summary": "leanchecker fresh-environment replay passed"
+    },
+    {
+      "detail": [],
+      "name": "input stability",
+      "ok": true,
+      "summary": "verification inputs unchanged during checks"
+    }
+  ],
+  "obligations": [
+    {
+      "axioms": [],
+      "declaration": "VerifiedCounter.Proof.implementation_correct",
+      "module": "VerifiedCounter.Proof",
+      "name": "implementation-correct",
+      "statement": "VerifiedCounter.Spec.Contract VerifiedCounter.Impl.run"
+    }
+  ],
+  "policy_profile": "VERFORM-LAKE-CLOSURE-v1",
+  "project": "verified-counter",
+  "prover": "lean4",
+  "record_kind": "unsigned-local-drift-record",
+  "review": {
+    "code_lines": 21,
+    "files": {
+      "VerifiedCounter/Spec.lean": "85034901b7a6a4661fffd40b43cd37e5bf2e35abf287f69f242bccc28be8b3fe",
+      "lake-manifest.json": "131c5b15c283f89580ebe302a8dcab091e9b5c6245593078791889897b2f1fe6",
+      "lakefile.toml": "69a7b55c618fa7ba70c3e08c4cda1a3ebce47538feafa214a4a5291007cc3c8e",
+      "lean-toolchain": "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273",
+      "verform.toml": "72582568fdc20697ae79ee8ecada671d58fd19cda8b451b6adaaff8c2801a9c7"
+    },
+    "max_code_lines": 80
+  },
+  "toolchain": "Lean (version 4.32.2, x86_64-unknown-linux-gnu, commit f3b06c705e6c85f5314019d5d3baab0fec5b580c, Release)",
+  "verform_version": "0.1.0",
+  "verification_inputs": {
+    "VerifiedCounter.lean": "a7cc3027d1cb61fd45126e19d2a4c441d47d51357201279a9d312e4ecb857315",
+    "VerifiedCounter/Impl.lean": "34aec9a04e31c0bcbd7fc643af5208ad6bd513527ebeb6a4894abb60f16d5ef0",
+    "VerifiedCounter/Proof.lean": "a75be60d4cad900805fa0570f1e173afa5d31021ebb1808f34c65f0c2021afbb",
+    "VerifiedCounter/Spec.lean": "85034901b7a6a4661fffd40b43cd37e5bf2e35abf287f69f242bccc28be8b3fe",
+    "lake-manifest.json": "131c5b15c283f89580ebe302a8dcab091e9b5c6245593078791889897b2f1fe6",
+    "lakefile.toml": "69a7b55c618fa7ba70c3e08c4cda1a3ebce47538feafa214a4a5291007cc3c8e",
+    "lean-toolchain": "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273",
+    "verform.toml": "72582568fdc20697ae79ee8ecada671d58fd19cda8b451b6adaaff8c2801a9c7"
+  }
+}

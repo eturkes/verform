@@ -1,0 +1,23 @@
+manifest_version = 1
+
+[project]
+name = "verified-counter"
+prover = "lean4"
+
+[review]
+files = ["VerifiedCounter/Spec.lean", "lakefile.toml", "lean-toolchain", "lake-manifest.json"]
+max_code_lines = 80
+
+[lean]
+assurance = "kernel"
+module_root = "."
+evidence_files = ["lean-toolchain", "lakefile.toml"]
+timeout_seconds = 600
+
+[[obligations]]
+name = "implementation-correct"
+module = "VerifiedCounter.Proof"
+declaration = "VerifiedCounter.Proof.implementation_correct"
+contract = "VerifiedCounter.Spec.Contract"
+implementation = "VerifiedCounter.Impl.run"
+allowed_axioms = []

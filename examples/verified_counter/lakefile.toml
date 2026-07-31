@@ -1,0 +1,7 @@
+name = "verified-counter"
+version = "0.1.0"
+defaultTargets = ["VerifiedCounter"]
+
+[[lean_lib]]
+name = "VerifiedCounter"
+roots = ["VerifiedCounter"]
