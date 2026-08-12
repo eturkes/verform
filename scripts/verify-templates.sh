@@ -107,7 +107,7 @@ expect_gate_failure() {
   fi
 }
 
-for required in uv lake leanchecker sed realpath mktemp; do
+for required in uv lake sed realpath mktemp; do
   if ! command -v "$required" >/dev/null 2>&1; then
     printf 'required command is unavailable: %s\n' "$required" >&2
     exit 2
