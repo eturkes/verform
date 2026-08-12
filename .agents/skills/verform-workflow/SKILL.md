@@ -13,22 +13,25 @@ to them. Read [design and trust model](../../../docs/design.md) and
 
 - `kernel` → implementation/proof is large or agent-generated but non-hostile. Lean build,
   environment audits, axiom closure, and `leanchecker --fresh` detect correctness failures.
-- `comparator` → solution may exploit elaboration or metaprogramming. Require Linux, trusted
-  Comparator/landrun tooling, and mandatory nanoda replay. Keep supplementary commands absent.
+- `comparator` → solution may exploit elaboration or metaprogramming. Require a dedicated,
+  unprivileged, secret-free Linux checker host plus trusted Comparator/landrun tooling and
+  mandatory nanoda replay. Keep supplementary commands absent.
 
 State which profile applies and keep claims within its threat model.
 
 ## Build the contract first
 
 1. Put complete behavioral semantics in a small reviewed `Spec` module.
-2. Define one unary contract over the executable root. Cover success and failure behavior,
-   completeness/progress where relevant, and boundary cases.
+2. Define one unary contract over the executable root. `result` contracts cover success/error
+   soundness + completeness; machines refine every transition. Cover boundary cases.
 3. Add a satisfiability or non-vacuity witness when practical.
 4. Keep the contract closure inside reviewed local modules.
 5. Put implementation and proof code outside `review.files`.
 
 For kernel mode, declare the exact proof module, theorem, contract, and implementation in one or
-more `[[obligations]]`. The theorem type must elaborate exactly to `Contract Implementation`.
+more `[[obligations]]`. The theorem must have its declared origin and elaborate exactly to
+`Contract Implementation`. Keep executable roots total, safe, transparent, Lean-defined, and free
+of FFI/runtime substitutions.
 
 For Comparator mode, review `Challenge`, keep `Solution` unreviewed, list at least one semantic
 theorem and executable definition, and ensure every listed definition occurs directly in a listed
@@ -71,9 +74,11 @@ uv run verform attest <project>
 uv run verform status <project>
 ```
 
-Commit `verform.lock.json` beside the exact verified inputs. `status` is a Lean-free drift check.
-The lock is unsigned local evidence: use external signatures or trusted CI provenance for actor,
-machine, and run identity.
+Commit `verform.lock.json` beside the exact verified inputs. Then rerun `attest` + `status` from the
+final commit; the lock must reproduce byte-identically and the worktree must remain clean. Repeat
+after any verified-input or lock change. `status` is a Lean-free drift check. The lock is unsigned
+local evidence: use external signatures or trusted CI provenance for actor, machine, and run
+identity.
 
 Report the exact source-level theorem and profile. Separately disclose that Verform does not
 verify compiler/codegen artifacts, unmodeled IO/FFI/concurrency/resources, dependency provenance,
