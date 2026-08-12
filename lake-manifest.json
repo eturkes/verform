@@ -1,0 +1,8 @@
+{
+  "version": "1.2.0",
+  "fixedToolchain": false,
+  "name": "«verform»",
+  "lakeDir": ".lake",
+  "packagesDir": ".lake/packages",
+  "packages": []
+}

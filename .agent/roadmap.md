@@ -2,24 +2,32 @@
 
 ## Objective
 
-Ship a domain-general, Lean-first formal-verification-driven development harness inspired by `verified-3d-mesh-intersection`: minimize the human-reviewed contract surface; treat implementation + proof as untrusted; let Lean certify exact conformance; make trust assumptions machine-auditable.
+Ship a self-hosting Lean implementation of Verform: preserve the verification lifecycle, make a
+natural-language prompt the primary interface, and delegate synthesis to authenticated Codex
+`gpt-5.6-sol` with `max` reasoning while retaining explicit formal gates.
 
 ## Success criteria
 
-- One manifest declares trusted files, review budget, Lean source roots, forbidden escape hatches, exact proof obligations, allowed axioms, and supplementary checks.
-- `verform check` validates configuration/path safety, closed trusted imports, forbidden Lean constructs, proof build, exact obligation types, axiom dependencies, and configured checks.
-- `verform attest` records a deterministic proof/review attestation; `verform status` detects trusted-surface or policy drift without invoking the prover.
-- `verform init` scaffolds a compiling Lean project with separated `Spec` / `Impl` / `Proof` layers and an example contract.
-- CLI/library behavior has unit + integration coverage; the repository dogfoods the workflow against a real pinned Lean toolchain.
-- Documentation states the trust boundary and guarantee limits precisely; CI reproduces kernel gates and Comparator template checks, while an installed-stack integration run covers Comparator.
+- Lean executable owns manifest parsing, static policy, verification orchestration, scaffolding,
+  review packets, attestations, drift status, and presentation. The retained Python reference is
+  renamed `verform-python-legacy` and exposes no canonical `verform` command.
+- `verform '<natural-language request>'` launches Codex through the signed-in ChatGPT subscription
+  with model/effort pinned to `gpt-5.6-sol`/`max`; legacy lifecycle subcommands remain available.
+- A small reviewed Lean contract specifies the immutable synthesis-routing policy and is bound to
+  the exact pure executable definition by an axiom-free theorem.
+- Compatibility and adversarial tests cover fail-closed configuration, path/build boundaries,
+  process failures, synthesis routing, templates, and the verified example.
+- CI builds/tests the Lean package, dogfoods `check`/`attest`/`status`, and verifies generated
+  templates; docs state source-level guarantees and Codex/IO/toolchain trust limits precisely.
 
 ## Work
 
-- [x] Reference + ecosystem analysis
-- [x] Architecture + threat model
-- [x] Python package + CLI
-- [x] Lean adapter + lexical/import policy
-- [x] Scaffolding template + dogfood example
-- [x] Tests + CI + docs
-- [x] Real-toolchain verification + adversarial review
-- [x] Cleanup + scoped commit
+- [x] Original Python architecture + threat model
+- [x] Lean runtime/API feasibility + compatibility inventory
+- [x] Reviewed synthesis-routing contract + satisfiability witness
+- [x] Pure Lean model/config/policy core + proof
+- [x] Lean IO runner/verifier/review/attestation/scaffolding adapters
+- [x] Natural-language Codex subscription workflow
+- [x] Lean unit/integration/adversarial tests + CI migration
+- [x] Documentation + self-hosted attestation
+- [x] Final cleanup + scoped commit

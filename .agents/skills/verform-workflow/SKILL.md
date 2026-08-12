@@ -55,8 +55,8 @@ theorem type.
 ## Iterate
 
 ```bash
-uv run verform review <project>
-uv run verform check <project>
+.lake/build/bin/verform review <project>
+.lake/build/bin/verform check <project>
 ```
 
 Review the rendered manifest and every included trusted file. A contract change requires renewed
@@ -70,8 +70,8 @@ Verform itself.
 ## Certify and hand off
 
 ```bash
-uv run verform attest <project>
-uv run verform status <project>
+.lake/build/bin/verform attest <project>
+.lake/build/bin/verform status <project>
 ```
 
 Commit `verform.lock.json` beside the exact verified inputs. Then rerun `attest` + `status` from the

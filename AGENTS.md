@@ -10,6 +10,12 @@
 ## Execution
 
 - Install/configure project-local; work within the launch dir + children.
+- Canonical runtime = `.lake/build/bin/verform`; build/test = `lake build` / `lake test`; Lean =
+  pinned 4.32.2 with zero external Lake dependencies.
+- Every non-hidden `Lean/**/*.lean` file enters the root self-check. Preserve the raw forbidden-
+  identifier policy even in comments/literals by assembling policy vocabulary from fragments.
+- `Lean/Verform/Model.lean` + `Lean/Verform/Spec.lean` own the reviewed self-hosting semantics;
+  changes require renewed semantic review. Implementation/proof modules remain unreviewed.
 - Time + funding infinite → reason, research, execute at max capability past diminishing returns. My efficiency directives serve performance alone. Every task is multi-step → think before responding.
 - Internal reasoning language = task-optimal.
 - Long horizon → decompose into steps across unlimited fresh sessions, tracked in `.agent/roadmap.md`; split work across sessions to preserve thoroughness.

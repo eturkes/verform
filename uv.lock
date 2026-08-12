@@ -445,7 +445,7 @@ wheels = [
 ]
 
 [[package]]
-name = "verform"
+name = "verform-python-legacy"
 version = "0.1.0"
 source = { editable = "." }
 

@@ -1,0 +1,21 @@
+name = "verform"
+version = "0.2.0"
+srcDir = "Lean"
+defaultTargets = ["verform"]
+testDriver = "verform_tests"
+
+[[lean_lib]]
+name = "Verform"
+roots = ["Verform"]
+
+[[lean_lib]]
+name = "VerformTests"
+roots = ["VerformTests"]
+
+[[lean_exe]]
+name = "verform"
+root = "VerformMain"
+
+[[lean_exe]]
+name = "verform_tests"
+root = "VerformTests"

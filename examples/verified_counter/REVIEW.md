@@ -6,7 +6,7 @@
 
 ## Declared obligations
 
-- `implementation-correct`: `VerifiedCounter.Proof.implementation_correct` proves `VerifiedCounter.Spec.Contract VerifiedCounter.Impl.run`; allowed axioms = `(none)`
+- `implementation-correct`: `VerifiedCounter.Proof.implementation_correct` proves `VerifiedCounter.Spec.Contract VerifiedCounter.Impl.run`; allowed logical assumptions = `(none)`
 
 ## Manifest
 

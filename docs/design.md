@@ -1,9 +1,45 @@
 # Design and trust model
 
-Verform makes one narrow claim: a named Lean theorem establishes a human-reviewed
-contract for a named executable definition, under an explicit axiom policy. It reduces the
-review surface; it does not replace review of the specification or turn source proofs into a
+Verform makes one narrow claim: a named Lean theorem establishes a declared contract for a named
+executable definition, under an explicit logical-assumption policy. It reduces the review
+surface; it does not perform semantic review of the specification or turn source proofs into a
 verified native application.
+
+Verform itself is a Lean 4 executable. Its natural-language layer is an untrusted generator in
+front of this claim: authenticated Codex proposes specifications, implementations, and proofs and
+may try them inside its synthesis sandbox. Human semantic review precedes a separate explicit
+invocation of the deterministic verification pipeline outside that sandbox.
+
+## Natural-language synthesis boundary
+
+```text
+natural-language request
+        │
+        ▼
+Codex CLI via ChatGPT subscription
+gpt-5.6-sol / max / workspace-write
+        │ untrusted filesystem changes + prose
+        ▼
+UNVERIFIED manifest + declared review surface + Impl + Proof
+        │ explicit human review + check invocation
+        ▼
+independent formal pipeline described below
+```
+
+The self-hosting theorem
+`Verform.Proof.codexInvocation_correct : Verform.Spec.Contract
+Verform.Agent.Plan.codexInvocation` binds the pure routing decision: formal-synthesis instruction
+template, executable, model, reasoning effort, service tier, OpenAI provider, workspace, sandbox,
+approval policy, ignored user config and execpolicy `.rules`, disabled extension surfaces,
+JSONL/ephemeral mode, and the ordered stdin chunks. It has no logical assumptions. Chunk
+joining/writing belongs to the runtime adapter. The theorem does not prove Codex identity,
+subscription
+entitlement, network behavior, filesystem effects, generated-code safety, or prompt-to-contract
+correspondence. The runtime checks ChatGPT login status, rejects project `.codex` controls,
+ignores user config and execpolicy `.rules`, disables extension/tool surfaces, explicitly selects
+the OpenAI provider, removes API-key environment variables, and still treats all generated output
+as untrusted. The outer synthesis adapter never independently elaborates Lean or runs generated
+supplementary commands; it renders the next review/check commands and exits.
 
 ## Verification boundary
 
@@ -48,8 +84,9 @@ cover contract meaning, domain assumptions, completeness, and non-vacuity.
    reviewed, while implementations, proofs, and solutions must remain outside that surface.
 6. **Fresh snapshot** — Verform copies the manifest, all discovered Lean sources, build inputs,
    evidence, and review files into a new temporary directory. It copies neither `.lake` nor Git
-   state. Every copy is rehashed against the initial inventory before prover work starts; a final
-   hash comparison rejects mutation of original verification inputs during a successful run.
+   state. Every copy is rehashed against the initial inventory before prover work starts; final
+   hash comparisons reject mutation of either snapshot or original verification inputs during a
+   successful run.
 7. **Pinned tool observation** — `lake env lean --version` must report exactly 4.32.2. Header and
    environment checks use the same Lake-selected Lean. This checks the tool's self-reported
    version, not its binary hash or provenance.
@@ -58,7 +95,8 @@ cover contract meaning, domain assumptions, completeness, and non-vacuity.
    it may not import an unreviewed local module. This audit, not an approximate text parser,
    establishes the local trusted-import boundary.
 9. **Profile gates** — the kernel or Comparator pipeline below runs in the snapshot.
-10. **Input stability** — original input hashes must still match the pre-check snapshot.
+10. **Input stability** — snapshot and original input hashes must still match the pre-check
+    inventory.
 
 The raw forbidden-spelling pass catches obvious escape hatches early and uniformly, including
 text that a lexer might otherwise discard. It is deliberately not the soundness argument.
@@ -114,9 +152,9 @@ reviewed challenge and uses the Lean environment to confirm that:
   semantic theorem's type.
 
 Verform then emits an ephemeral Comparator configuration, forces `enable_nanoda = true`, and
-invokes Comparator through user `systemd-run` with
-`RestrictAddressFamilies=~AF_UNIX`; Comparator delegates hostile solution work to its landrun
-sandbox. Comparator is
+invokes Comparator through user `systemd-run`, passes a controlled tool `PATH`, and denies
+`AF_UNIX` with `RestrictAddressFamilies=~AF_UNIX` as required by Comparator's current Landlock
+defense. Comparator delegates hostile solution work to its landrun sandbox. Comparator is
 responsible for exact challenge/solution declaration matching, the permitted-axiom policy,
 sandboxed solution processing, Lean replay, and independent nanoda replay. Nanoda cannot be
 disabled in `verform.toml`. Its current strict declaration check requires the standard prelude
@@ -129,8 +167,9 @@ the intended use.
 
 Comparator/landrun grants hostile build processes read access to the host filesystem. The sandbox
 protects integrity and limits writes/network; it does not protect local secrets. Run it under a
-dedicated unprivileged checker identity on a secret-free host. Runtime and output limits terminate
-the transient systemd unit, but systemd, Landlock, the OS, and hardware remain trusted.
+dedicated unprivileged checker identity on a secret-free host. The runtime limit terminates the
+transient systemd unit; the output-size check runs after capture and is not a memory bound.
+Systemd, Landlock, the OS, and hardware remain trusted.
 
 ## Assurance comparison
 
@@ -160,10 +199,12 @@ external signature or trusted CI provenance envelope when those properties matte
 
 ## Trusted computing base and non-claims
 
-The guarantee depends on the reviewed semantics and build controls, Verform itself, Python,
-Lean 4.32.2's parser/elaborator/kernel/checker, Comparator/nanoda/landrun when selected, executable
-resolution through `PATH`, the operating system, and hardware. Hashes identify bytes; they do not
-authenticate their origin.
+The guarantee depends on the reviewed semantics and build controls, Verform's Lean executable,
+Lean 4.32.2's parser/elaborator/kernel/checker, GNU `timeout`, util-linux PID/user namespaces and
+parent-death signaling, Comparator/nanoda/landrun when selected, executable resolution through
+`PATH`, the operating system, and hardware. Each command enters a fresh PID namespace; teardown bounds
+descendants even if they create a new session. Captured output is size-checked only after command
+completion. Hashes identify bytes; they do not authenticate their origin.
 
 Verform does **not** establish:
 
@@ -178,6 +219,8 @@ Verform does **not** establish:
   TCB. URL transport and revision availability are not reproducibility guarantees.
 - **Tool provenance** — the toolchain file and version output do not attest the Lean binary;
   Comparator-side tool names are likewise resolved from the local environment.
+- **Generator/service correctness** — the Codex executable, ChatGPT authentication, model service,
+  network, inference, and natural-language interpretation remain outside the Lean theorem.
 - **Specification validity** — satisfiability witnesses help expose vacuity but cannot establish
   correspondence to stakeholder intent.
 - **Absolute hostile-code containment** — sandboxing reduces exposure; its implementation, host

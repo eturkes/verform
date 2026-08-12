@@ -13,3 +13,4 @@ __pycache__/
 .tools/
 .reference.*/
 .lake/
+.verform-stage/

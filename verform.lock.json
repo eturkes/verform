@@ -1,0 +1,153 @@
+{
+  "assurance": "kernel",
+  "comparator": null,
+  "format_version": 1,
+  "gates": [
+    {
+      "detail": [],
+      "name": "sources",
+      "ok": true,
+      "summary": "29 Lean source file(s); 29 unique module(s)"
+    },
+    {
+      "detail": [],
+      "name": "source policy",
+      "ok": true,
+      "summary": "no forbidden identifier spellings (comments and literals included)"
+    },
+    {
+      "detail": [],
+      "name": "build closure",
+      "ok": true,
+      "summary": "Lake 1.2.0 lock: 0 pinned Git package(s); 3 hashed control file(s)"
+    },
+    {
+      "detail": [],
+      "name": "review surface",
+      "ok": true,
+      "summary": "5 file(s), 146/180 lines"
+    },
+    {
+      "detail": [],
+      "name": "symbol boundary",
+      "ok": true,
+      "summary": "contract roots reviewed; implementation/proof roots isolated"
+    },
+    {
+      "detail": [],
+      "name": "isolated snapshot",
+      "ok": true,
+      "summary": "fresh workspace contains 33 hashed file(s)"
+    },
+    {
+      "detail": [],
+      "name": "toolchain",
+      "ok": true,
+      "summary": "Lean (version 4.32.2, x86_64-unknown-linux-gnu, commit f3b06c705e6c85f5314019d5d3baab0fec5b580c, Release)"
+    },
+    {
+      "detail": [],
+      "name": "trusted imports",
+      "ok": true,
+      "summary": "Lean parser confirms the trusted local import graph is closed"
+    },
+    {
+      "detail": [],
+      "name": "fresh build",
+      "ok": true,
+      "summary": "cache-free, rehashed Lean elaboration + kernel checking passed"
+    },
+    {
+      "detail": [],
+      "name": "obligation:codex-routing-correct",
+      "ok": true,
+      "summary": "exact contract/implementation origins and safe local runtime closure; logical assumptions: (none)"
+    },
+    {
+      "detail": [],
+      "name": "kernel replay:Verform.Proof",
+      "ok": true,
+      "summary": "leanchecker fresh-environment replay passed"
+    },
+    {
+      "detail": [],
+      "name": "check:lean-tests",
+      "ok": true,
+      "summary": "passed"
+    },
+    {
+      "detail": [],
+      "name": "snapshot stability",
+      "ok": true,
+      "summary": "snapshot inputs unchanged after prover work"
+    },
+    {
+      "detail": [],
+      "name": "input stability",
+      "ok": true,
+      "summary": "verification inputs unchanged during checks"
+    }
+  ],
+  "obligations": [
+    {
+      "axioms": [],
+      "declaration": "Verform.Proof.codexInvocation_correct",
+      "module": "Verform.Proof",
+      "name": "codex-routing-correct",
+      "statement": "Verform.Spec.Contract Verform.Agent.Plan.codexInvocation"
+    }
+  ],
+  "policy_profile": "VERFORM-LAKE-CLOSURE-v1",
+  "project": "verform",
+  "prover": "lean4",
+  "record_kind": "unsigned-local-drift-record",
+  "review": {
+    "code_lines": 146,
+    "files": {
+      "Lean/Verform/Model.lean": "8301b2ff12a5570d28c366e99b973fc040d7ff38301f47ecf4e7d427e0bb9766",
+      "Lean/Verform/Spec.lean": "9bfb9243718853d4da559010f8a49cfdbda11d3c9f1c6df36dd3a58f85a126c2",
+      "lake-manifest.json": "abfce319731ce81849fd7466daf58fbed45b9d0eba5022f1688bf0c27ff9305a",
+      "lakefile.toml": "fc3346e9bee50e81f0ce644bddc6d984bf20ef4daab3eb3d21c1e746b0dc2832",
+      "lean-toolchain": "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273",
+      "verform.toml": "b292b8b214737af2195290ada44f7f7e22dd73fb4eaaea9d4db72852ba40fd43"
+    },
+    "max_code_lines": 180
+  },
+  "toolchain": "Lean (version 4.32.2, x86_64-unknown-linux-gnu, commit f3b06c705e6c85f5314019d5d3baab0fec5b580c, Release)",
+  "verform_version": "0.2.0",
+  "verification_inputs": {
+    "Lean/Verform.lean": "f25710f68fb40daaf6c9c112927f56e0bb64ff214dfa88ecb6f19505497da9fb",
+    "Lean/Verform/Agent/Codex.lean": "a1cde19398e6eb0d233647a5e23029825cfce57369a78a8bf9f14baad436ceb9",
+    "Lean/Verform/Agent/Plan.lean": "8105e12f0593b360bc844dd22ebcc51252ac63304dea3cbd2f2cedc82d17a5e7",
+    "Lean/Verform/Attestation.lean": "895991d50b726744b340bdb47e30843266f12013314612596f30d0f2d83281a8",
+    "Lean/Verform/AuditSource.lean": "1e695bba25924fd10bb1536bc2784524885e238e71e426e84d31bb0b8b6ed8d0",
+    "Lean/Verform/Config.lean": "651583fcfc1febbaea070ac77e61f28df157cb8b25887d8359f20ea08f4f0725",
+    "Lean/Verform/Json.lean": "ea42105585d8978c48d001a06971259a76c4c78fc2d4e8b429b19084b7817f7f",
+    "Lean/Verform/Model.lean": "8301b2ff12a5570d28c366e99b973fc040d7ff38301f47ecf4e7d427e0bb9766",
+    "Lean/Verform/Path.lean": "de4ab8ef07e0a2c5bed17e3d13aed5a97786c2bc76ff9c9de1eda161208356bb",
+    "Lean/Verform/Policy.lean": "0b580186d3b81e2482481b6b23a52d266d20d29413cf4e2a919e4494cff35664",
+    "Lean/Verform/Presentation.lean": "1f549b35f85bfcdf4a05a4be8a9a84471cba9795f9cab51452717296e4d8f602",
+    "Lean/Verform/Proof.lean": "d90af746e029073d7df2dde3a0ce7bb0edc1a32ba7d2fb6eb6624d0ce23aa6c6",
+    "Lean/Verform/Review.lean": "f3719df2acf91fe6b8fc4bcd5e1274c0dd30964dbf9b480ce5e2b5f75dbad2f7",
+    "Lean/Verform/Runner.lean": "30630ef69d09f5dead69978ef6c3748650e2155361d5114520cac9c78b5bb08f",
+    "Lean/Verform/Scaffold.lean": "3ef72fe4eae33d32d60b0c398a4cd707ecae6d04e1f02a1b09e5cd39bf9c95aa",
+    "Lean/Verform/Sha256.lean": "52361fd387721a79d2552038f69a0d4e31f7ee4d7e9ef5c6359251a1b7fbedf6",
+    "Lean/Verform/Spec.lean": "9bfb9243718853d4da559010f8a49cfdbda11d3c9f1c6df36dd3a58f85a126c2",
+    "Lean/Verform/Verifier.lean": "4abaaedfee2f642214d993dcc8e6e5a6b5a949c4e346b5dd6a2f65ebd80931fc",
+    "Lean/VerformMain.lean": "ae5a90faf6a42a796a29d2bcfb7faaebe8b75650ac247db5a03747f7b73644af",
+    "Lean/VerformTests.lean": "ee70e99a64ad3fa068789b370abd48a15776c7aa319f6cfe0d31885868df2f0b",
+    "Lean/VerformTests/Attestation.lean": "dba9e49c7dfa65a8785f596639c12d5eea2ccb6c0dfbc4c613efd184f24b1e3c",
+    "Lean/VerformTests/Codex.lean": "73c448c3964c5df312a51d6327107d8d767cc7e5305b4f6c8369fd2435e9b051",
+    "Lean/VerformTests/Config.lean": "9d0579204426ee9fd0c134dbdde5289cd1ffacf4e0c96d790972e52928fae202",
+    "Lean/VerformTests/Path.lean": "24acb4d83dca720f6ddcf50bf79ad0b2a1a05dd0ef85e8540f07a5728f7d622c",
+    "Lean/VerformTests/Plan.lean": "1d1e0bcdc3fb5b213d2bbadddd1a088c1a22f456576d44191f327370141294eb",
+    "Lean/VerformTests/Policy.lean": "63c468a88d83be98560a67a00c707cffd1b0353894509769f7463c89b0ae9d36",
+    "Lean/VerformTests/Runner.lean": "6662d37a6d4e9748e890d19a151ae68cbf328e0bad16dcf1d8831bb7107f4361",
+    "Lean/VerformTests/Scaffold.lean": "9e718c20975ea40881774b62e2bd257ec9130bc361587f5a71f834aaaafb0719",
+    "Lean/VerformTests/Sha256.lean": "05a8c49b5ea603cd1608a3667f21b69ac5a51394cb0bfe561319feb7d57b2fcd",
+    "lake-manifest.json": "abfce319731ce81849fd7466daf58fbed45b9d0eba5022f1688bf0c27ff9305a",
+    "lakefile.toml": "fc3346e9bee50e81f0ce644bddc6d984bf20ef4daab3eb3d21c1e746b0dc2832",
+    "lean-toolchain": "2bdc48adfa58d0017e538a0ad117c5d73d35deec879978f909406a80c8037273",
+    "verform.toml": "b292b8b214737af2195290ada44f7f7e22dd73fb4eaaea9d4db72852ba40fd43"
+  }
+}

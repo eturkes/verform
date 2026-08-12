@@ -1,0 +1,34 @@
+manifest_version = 1
+
+[project]
+name = "verform"
+prover = "lean4"
+
+[review]
+files = [
+  "Lean/Verform/Model.lean",
+  "Lean/Verform/Spec.lean",
+  "lakefile.toml",
+  "lean-toolchain",
+  "lake-manifest.json",
+]
+max_code_lines = 180
+
+[lean]
+assurance = "kernel"
+module_root = "Lean"
+evidence_files = ["lean-toolchain", "lakefile.toml"]
+timeout_seconds = 1200
+
+[[obligations]]
+name = "codex-routing-correct"
+module = "Verform.Proof"
+declaration = "Verform.Proof.codexInvocation_correct"
+contract = "Verform.Spec.Contract"
+implementation = "Verform.Agent.Plan.codexInvocation"
+allowed_axioms = []
+
+[[checks]]
+name = "lean-tests"
+command = ["lake", "test"]
+timeout_seconds = 600

@@ -2,53 +2,57 @@
 
 ## Purpose
 
-Domain-general formal-verification-driven development harness: humans review compact Lean
-semantics; agents own implementation/proof volume; Verform proves the named executable root meets
-the named contract and records exact local inputs.
+Self-hosting Lean formal-synthesis harness. Natural-language request → subscription-backed Codex
+generation → unverified candidate → human review → explicit exact-contract verification. A generated contract is a review candidate;
+human acceptance of its semantics precedes any intent claim. Implementation/proof volume stays
+outside the declared review surface.
 
 ## Stack
 
-- Python 3.11+ stdlib CLI/package, managed with `uv`.
-- Lean-only backend, pinned to `leanprover/lean4:v4.32.2`.
-- Source: `src/verform/`; tests: `tests/`; dogfood: `examples/verified_counter/`.
+- Lean 4.32.2 only; declarative Lake package; no external Lake dependencies.
+- Source: `Lean/Verform/`; tests: `Lean/VerformTests/`; executable:
+  `.lake/build/bin/verform`.
+- Pure-Lean SHA-256, bundled `Lake.Toml` + `Lean.Json`, `IO.Process` + GNU `timeout` adapters.
+- Codex CLI through ChatGPT subscription: explicit OpenAI provider, `gpt-5.6-sol`, `max`,
+  `workspace-write`, ignored user config, ephemeral JSONL, stdin prompt; API-key environment
+  removed; project `.codex` controls and optional extension/tool surfaces disabled.
 - Profiles: `kernel` for non-hostile generated proofs; `comparator` for hostile solutions.
 
 ## Durable invariants
 
-- Manifest parser fails on unknown keys and unsafe/duplicate values.
-- Discover every non-hidden `.lean` file below one module root; no configurable omission globs.
-- Require reviewed `lakefile.toml`, `lean-toolchain`, and strict manifest 1.2.0
-  `lake-manifest.json`; accept only Git dependencies pinned by full lowercase revisions.
-- Reject `lakefile.lean`, package overrides, symlinked inputs, and hard-denied axioms.
-- Raw forbidden identifier spellings are defense in depth. Lean's parser/environment audits are
-  authoritative for imports, declaration origins, exact theorem shape, safe runtime closure, and
-  axiom dependencies.
-- Kernel obligations bind `declaration : contract implementation`, reject noncomputable/runtime
-  substitution roots, then run `leanchecker --fresh`.
+- Manifest parser fails on unknown keys, unsafe/duplicate values, invalid profile fields, and
+  denied logical assumptions.
+- Discover every non-hidden `.lean` file below one module root; no omission globs.
+- Require reviewed `lakefile.toml`, `lean-toolchain`, strict Lake manifest 1.2.0, and pinned Git
+  dependency revisions; reject build overrides and symlinked inputs.
+- Lean's parser/environment establish trusted imports, declaration origins, exact theorem shape,
+  runtime closure, and logical-dependency closure; raw spelling scan is defense in depth.
+- Kernel obligations bind `declaration : contract implementation`, audit total/transparent/safe
+  executable closure, then run `leanchecker --fresh`.
 - Comparator requires reviewed Challenge, unreviewed Solution, theorem-to-definition references,
-  official sandboxed comparison, and mandatory nanoda replay.
-- Verify from a fresh copied snapshot; validate every copied byte, then hash-check original inputs
-  again before success. Resolve version/header/audit commands through the same `lake env lean`.
-- Attestation writes only after a successful full check. Its lock is deterministic but unsigned
-  and unauthenticated.
+  sandbox comparison, and nanoda replay.
+- Verify a fresh hashed snapshot; hash-check both snapshot and original inputs again before
+  success.
+- Attestation is deterministic unsigned drift evidence. It is not actor or machine provenance.
 
-## Claim limits
+## Self-hosted claim
 
-Proofs cover reviewed source-level Lean propositions. Compiler/codegen artifacts, runtime and
-unmodeled effects, dependency/tool provenance, specification validity, OS/hardware, and absolute
-sandbox containment remain outside the guarantee.
+`Verform.Proof.codexInvocation_correct : Verform.Spec.Contract
+Verform.Agent.Plan.codexInvocation`, kernel profile, no logical assumptions. It binds exact routing;
+including the synthesis instruction template; it excludes process/network/service behavior,
+filesystem effects, generated semantics, native
+artifacts, and prompt-to-contract correspondence.
 
 ## Routine validation
 
 ```bash
-uv run ruff check .
-uv run mypy
-uv run pytest --cov
-uv build
-uv run verform check examples/verified_counter
-uv run verform attest examples/verified_counter
-uv run verform status examples/verified_counter
+lake build
+lake test
+.lake/build/bin/verform check .
+.lake/build/bin/verform attest .
+.lake/build/bin/verform status .
+scripts/verify-templates.sh
 ```
 
-Keep `docs/design.md`, `docs/manifest.md`, scaffolds, tests, and the dogfood attestation aligned
-whenever schema or trust semantics change.
+Keep `docs/design.md`, `docs/manifest.md`, scaffolds, tests, CI, and the root attestation aligned
+whenever schema, routing, or trust semantics change.

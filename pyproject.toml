@@ -3,9 +3,9 @@ requires = ["uv_build>=0.11.26,<0.13"]
 build-backend = "uv_build"
 
 [project]
-name = "verform"
+name = "verform-python-legacy"
 version = "0.1.0"
-description = "Lean-first verification gates for proof-driven development"
+description = "Superseded Python reference implementation; canonical Verform is Lean-native"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
@@ -25,7 +25,7 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-verform = "verform.cli:main"
+verform-python-legacy = "verform.cli:main"
 
 [dependency-groups]
 dev = [
@@ -59,3 +59,6 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.uv.build-backend]
+module-name = "verform"

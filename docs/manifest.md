@@ -251,6 +251,19 @@ verform attest  .   # rerun check; atomically write verform.lock.json on success
 verform status  .   # static checks + unsigned local hash-drift comparison; no Lean
 ```
 
+Natural-language synthesis is the primary composed interface:
+
+```bash
+verform '<request>'
+verform synth --path <project> '<request>'
+```
+
+It invokes authenticated ChatGPT Codex with `gpt-5.6-sol`/`max`, then returns an unverified
+candidate without independently executing generated Lean outside the Codex sandbox. Run
+`verform review` first. After semantic acceptance, an explicit `verform check` establishes
+generated-source conformance to that contract—not correspondence between the contract and the
+request.
+
 `verform.lock.json` is a deterministic local record, not a signature. Authenticate it with an
 external signing or CI provenance mechanism before treating it as evidence from another actor or
 machine.
