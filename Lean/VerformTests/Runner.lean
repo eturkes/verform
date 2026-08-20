@@ -16,6 +16,10 @@ def tests : IO Unit := do
   let timeout ← Verform.Runner.run #["sh", "-c", "sleep 2"] "." none 1
   assert (timeout.exitCode == 124) "runner timeout exit"
   assert (!timeout.ok) "runner timeout failure"
+  let signaled ← Verform.Runner.run
+    #["sh", "-c", "sh -c 'kill -KILL $$'; rc=$?; exit \"$rc\""] "." none 10
+  assert (signaled.exitCode == 137) "runner command signal exit preservation"
+  assert signaled.failure.isEmpty "runner command signal classification"
   let started ← IO.monoNanosNow
   let background ← Verform.Runner.run #["sh", "-c", "sleep 4 &"] "." none 1
   let elapsed ← IO.monoNanosNow

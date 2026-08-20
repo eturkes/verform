@@ -4,11 +4,24 @@ import Std.Internal.UV.System
 namespace Verform.Runner
 
 private def supervisorScript :=
-  "limit=$1; stdout=$2; stderr=$3; shift 3; " ++
-  "exec setpriv --pdeathsig KILL timeout --signal=TERM --kill-after=1s \"$limit\" " ++
+  "limit=$1; stdout=$2; stderr=$3; supervisor_stderr=$4; shift 4; " ++
+  "locale_set=${LC_ALL+x}; locale=${LC_ALL-}; export LC_ALL=C; " ++
+  "exec setpriv --pdeathsig KILL timeout --verbose --signal=TERM --kill-after=1s \"$limit\" " ++
     "setpriv --pdeathsig KILL unshare --kill-child=KILL --user --map-current-user --pid " ++
     "--fork --mount-proc -- " ++
-    "\"$@\" >\"$stdout\" 2>\"$stderr\""
+    "sh -c 'stdout=$1; stderr=$2; locale_set=$3; locale=$4; shift 4; " ++
+      "if [ \"$locale_set\" = x ]; then export LC_ALL=\"$locale\"; else unset LC_ALL; fi; " ++
+      "exec \"$@\" >\"$stdout\" 2>\"$stderr\"' " ++
+    "verform-command \"$stdout\" \"$stderr\" \"$locale_set\" \"$locale\" \"$@\" " ++
+    "2>\"$supervisor_stderr\""
+
+private def forcedTimeoutMarker := "timeout: sending signal KILL to command 'setpriv'"
+
+private structure CapturedOutput where
+  exitCode : UInt32
+  stdout : String
+  stderr : String
+  supervisorStderr : String
 
 structure Result where
   command : Array String
@@ -70,53 +83,63 @@ def run
     let output ← try
       let (_, stderrPath) ← IO.FS.createTempFile
       try
-        let processOutput ← IO.Process.output {
-          cmd := "sh"
-          args := #["-c", supervisorScript, "verform-supervisor", s!"{timeoutSeconds}s",
-            stdoutPath.toString, stderrPath.toString, executable] ++ command.extract 1 command.size
-          cwd := some cwd
-          env := processEnvironment
-          inheritEnv := true
-          setsid := false
-        } stdin
-        let stdout ← IO.FS.readFile stdoutPath
-        let stderr ← IO.FS.readFile stderrPath
-        pure ({exitCode := processOutput.exitCode, stdout, stderr} : IO.Process.Output)
+        let (_, supervisorStderrPath) ← IO.FS.createTempFile
+        try
+          let processOutput ← IO.Process.output {
+            cmd := "sh"
+            args := #["-c", supervisorScript, "verform-supervisor", s!"{timeoutSeconds}s",
+              stdoutPath.toString, stderrPath.toString, supervisorStderrPath.toString,
+              executable] ++ command.extract 1 command.size
+            cwd := some cwd
+            env := processEnvironment
+            inheritEnv := true
+            setsid := false
+          } stdin
+          let stdout ← IO.FS.readFile stdoutPath
+          let stderr ← IO.FS.readFile stderrPath
+          let supervisorStderr ← IO.FS.readFile supervisorStderrPath
+          pure ({exitCode := processOutput.exitCode, stdout, stderr, supervisorStderr} : CapturedOutput)
+        finally
+          if ← supervisorStderrPath.pathExists then IO.FS.removeFile supervisorStderrPath
       finally
         if ← stderrPath.pathExists then IO.FS.removeFile stderrPath
     finally
       if ← stdoutPath.pathExists then IO.FS.removeFile stdoutPath
-    if output.exitCode == (127 : UInt32) && (output.stderr.contains "failed to run command" ||
-        output.stderr.contains "failed to execute") then
+    let forcedTimeout := output.exitCode == (137 : UInt32) &&
+      output.supervisorStderr.contains forcedTimeoutMarker
+    let timedOut := output.exitCode == (124 : UInt32) || forcedTimeout
+    let stderr := if timedOut then output.stderr else output.stderr ++ output.supervisorStderr
+    if output.exitCode == (127 : UInt32) && (stderr.contains "failed to run command" ||
+        stderr.contains "failed to execute") then
       return {
         command := command
         exitCode := 127
         stdout := output.stdout
-        stderr := output.stderr
+        stderr
         failure := s!"command not found: {executable}"
       }
-    let outputBytes := output.stdout.toUTF8.size + output.stderr.toUTF8.size
+    let outputBytes := output.stdout.toUTF8.size + stderr.toUTF8.size
     if outputBytes > outputLimitBytes then
       return {
         command := command
         exitCode := 125
         stdout := output.stdout
-        stderr := output.stderr
+        stderr
         failure := s!"combined stdout/stderr exceeded {outputLimitBytes}-byte capture limit"
       }
-    if output.exitCode == (124 : UInt32) then
+    if timedOut then
       return {
         command := command
         exitCode := 124
         stdout := output.stdout
-        stderr := output.stderr
+        stderr
         failure := s!"timed out after {timeoutSeconds}s"
       }
     return {
       command
       exitCode := output.exitCode
       stdout := output.stdout
-      stderr := output.stderr
+      stderr
     }
   catch error =>
     return {
