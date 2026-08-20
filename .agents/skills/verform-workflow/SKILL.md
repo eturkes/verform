@@ -22,11 +22,13 @@ State which profile applies and keep claims within its threat model.
 ## Build the contract first
 
 1. Put complete behavioral semantics in a small reviewed `Spec` module.
-2. Define one unary contract over the executable root. `result` contracts cover success/error
-   soundness + completeness; machines refine every transition. Cover boundary cases.
-3. Add a satisfiability or non-vacuity witness when practical.
-4. Keep the contract closure inside reviewed local modules.
-5. Put implementation and proof code outside `review.files`.
+2. Define one unary contract over the executable root. Cover success and failure behavior,
+   completeness/progress where relevant, and boundary cases.
+3. For result contracts, require success/error soundness and completeness. For state machines,
+   refine every transition.
+4. Add a satisfiability or non-vacuity witness when practical.
+5. Keep the contract closure inside reviewed local modules.
+6. Put implementation and proof code outside `review.files`.
 
 For kernel mode, declare the exact proof module, theorem, contract, and implementation in one or
 more `[[obligations]]`. The theorem must have its declared origin and elaborate exactly to
@@ -35,7 +37,8 @@ of FFI/runtime substitutions.
 
 For Comparator mode, review `Challenge`, keep `Solution` unreviewed, list at least one semantic
 theorem and executable definition, and ensure every listed definition occurs directly in a listed
-theorem type.
+theorem type. Run the checker under a dedicated unprivileged identity on a secret-free Linux host;
+the sandbox protects integrity, not confidentiality.
 
 ## Preserve verification closure
 
@@ -43,6 +46,8 @@ theorem type.
 - Use reviewed `lakefile.toml`; keep `lakefile.lean` absent.
 - Commit a manifest 1.2.0 `lake-manifest.json` containing only Git dependencies pinned to full
   lowercase 40-hex revisions.
+- Treat these controls as `VERFORM-LAKE-CLOSURE-v1`. Add a new versioned policy before widening
+  them.
 - Keep `.lake/package-overrides.json` absent.
 - Add every verification-relevant non-Lean file to `lean.evidence_files` and `review.files`.
 - Treat the raw forbidden spelling policy as defense in depth. Preserve authoritative Lean
